@@ -35,15 +35,14 @@ public class Usuario {
     private String senha;
 
     private String telefone;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_residencia", nullable = false)
-    private TipoResidencia tipoResidencia;
-
     private String rua;
     private String bairro;
     private String cidade;
     private String estado;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_residencia", nullable = false)
+    private TipoResidencia tipoResidencia;
 
     @Column(name = "reputacao_media", precision = 3, scale = 2)
     private BigDecimal reputacaoMedia = new BigDecimal("5.00");
