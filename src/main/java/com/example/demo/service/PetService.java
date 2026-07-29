@@ -4,10 +4,25 @@
  */
 package com.example.demo.service;
 
-/**
- *
- * @author Aluno
- */
+
+import com.example.demo.model.Pet;
+import com.example.demo.model.Usuario;
+import com.example.demo.repository.PetRepository;
+import com.example.demo.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
 public class PetService {
-    
+
+    @Autowired
+    private PetRepository petRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+
+    public Pet cadastrar(Pet cadastro) {
+        return petRepository.save(cadastro);
+    }
 }

@@ -4,6 +4,7 @@
  */
 package com.example.demo.Controller;
 
+import com.example.demo.model.CadastroUser;
 import com.example.demo.model.Usuario;
 import com.example.demo.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class UsuarioController {
     @PostMapping("/logar")
     public String Logar (@RequestBody Usuario user){
         return UserService.Logar(user.getEmail(), user.getSenha());
+        
+    }
+    
+    @PostMapping("/registro")
+    public String Registro (@RequestBody CadastroUser user){
+        return UserService.Registro(user);
         
     }
     

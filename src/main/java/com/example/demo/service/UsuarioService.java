@@ -4,6 +4,7 @@
  */
 package com.example.demo.service;
 
+import com.example.demo.model.CadastroUser;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-/**
- *
- * @author Aluno
- */
+
 @Service
 public class UsuarioService {
 @Autowired
-
 private UsuarioRepository usuarioR;
+@Autowired
 private TokenService Token;
 
 public String Logar (String email, String senha){
@@ -34,6 +32,30 @@ public String Logar (String email, String senha){
     return Token.gerarToken(user);
     
     
+}
+
+public String Registro(CadastroUser cadastro) {
+
+    Usuario user = new Usuario();
+
+    user.setNome(cadastro.getNome());
+    user.setEmail(cadastro.getEmail());
+    user.setSenha(cadastro.getSenha());
+    user.setTelefone(cadastro.getTelefone());
+    user.setRua(cadastro.getRua());
+    user.setBairro(cadastro.getBairro());
+    user.setCidade(cadastro.getCidade());
+    user.setEstado(cadastro.getEstado());
+
+    if (cadastro.getTipoResidencia() == null) {
+        user.setTipoResidencia(Usuario.TipoResidencia.APARTAMENTO);
+    } else {
+        user.setTipoResidencia(cadastro.getTipoResidencia());
+    }
+
+    usuarioR.save(user);
+
+    return Token.gerarToken(user);
 }
     
 }
