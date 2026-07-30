@@ -21,26 +21,52 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario tutor; 
+    private Usuario tutor;
 
     @Column(nullable = false, length = 50)
     private String nome;
 
-    @Column(nullable = false, length = 30)
-    private String especie;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Especie especie;
 
     private String raca;
     private Integer idade;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Porte porte; 
+    private Porte porte;
 
     @Column(columnDefinition = "TEXT")
     private String observacoes;
 
+    public enum Especie {
+        CACHORRO,
+        GATO,
+        PASSARO,
+        CALOPSITA,
+        PERIQUITO,
+        PAPAGAIO,
+        COELHO,
+        HAMSTER,
+        PORQUINHO_DA_INDIA,
+        CHINCHILA,
+        FURAO,
+        TARTARUGA,
+        CAGADO,
+        IGUANA,
+        LAGARTO,
+        COBRA,
+        PEIXE,
+        MINI_PIG,
+        CAVALO
+    }
+
     public enum Porte {
-        PEQUENO, MEDIO, GRANDE, GIGANTE
+        PEQUENO,
+        MEDIO,
+        GRANDE,
+        GIGANTE
     }
 
     public Pet() {
@@ -70,11 +96,11 @@ public class Pet {
         this.nome = nome;
     }
 
-    public String getEspecie() {
+    public Especie getEspecie() {
         return especie;
     }
 
-    public void setEspecie(String especie) {
+    public void setEspecie(Especie especie) {
         this.especie = especie;
     }
 
@@ -109,6 +135,5 @@ public class Pet {
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
     }
-    
-    
+
 }
