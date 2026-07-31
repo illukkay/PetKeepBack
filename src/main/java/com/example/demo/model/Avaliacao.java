@@ -31,20 +31,17 @@ public class Avaliacao {
 
     @ManyToOne
     @JoinColumn(name = "avaliador_id", nullable = false)
-    private Usuario avaliador; // Quem deu a nota
+    private Usuario avaliador;
 
     @ManyToOne
     @JoinColumn(name = "avaliado_id", nullable = false)
-    private Usuario avaliado; // Quem recebeu a nota
+    private Usuario avaliado;
 
     @Column(nullable = false)
     private Integer nota;
 
     @Column(columnDefinition = "TEXT")
     private String comentario;
-
-    @Column(name = "data_avaliacao", insertable = false, updatable = false)
-    private Timestamp dataAvaliacao;
 
     public Avaliacao() {
     }
@@ -96,14 +93,8 @@ public class Avaliacao {
     public void setComentario(String comentario) {
         this.comentario = comentario;
     }
-
-    public Timestamp getDataAvaliacao() {
-        return dataAvaliacao;
-    }
-
-    public void setDataAvaliacao(Timestamp dataAvaliacao) {
-        this.dataAvaliacao = dataAvaliacao;
-    }
+    
+    
     
     
 }

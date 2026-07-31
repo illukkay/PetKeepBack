@@ -4,7 +4,7 @@
  */
 package com.example.demo.service;
 
-import com.example.demo.model.CadastroUser;
+
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public String Logar (String email, String senha){
     
 }
 
-public String Registro(CadastroUser cadastro) {
+public String Registro(Usuario cadastro) {
 
     Usuario user = new Usuario();
 
@@ -46,6 +46,7 @@ public String Registro(CadastroUser cadastro) {
     user.setBairro(cadastro.getBairro());
     user.setCidade(cadastro.getCidade());
     user.setEstado(cadastro.getEstado());
+    user.setTipoUsuario(cadastro.getTipoUsuario());
 
     if (cadastro.getTipoResidencia() == null) {
         user.setTipoResidencia(Usuario.TipoResidencia.APARTAMENTO);

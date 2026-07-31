@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -44,6 +44,10 @@ public class Usuario {
     @Column(name = "tipo_residencia", nullable = false)
     private TipoResidencia tipoResidencia;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_usuario", nullable = false)
+    private TipoUsuario tipoUsuario;
+
     @Column(name = "reputacao_media", precision = 3, scale = 2)
     private BigDecimal reputacaoMedia = new BigDecimal("5.00");
 
@@ -51,8 +55,16 @@ public class Usuario {
     private Timestamp dataCadastro;
 
     public enum TipoResidencia {
-        CASA, APARTAMENTO, SITIO
-    }  
+        CASA,
+        APARTAMENTO,
+        SITIO
+    }
+
+    public enum TipoUsuario {
+        CONTRATANTE,
+        PRESTADOR,
+        AMBOS
+    }
 
     public Usuario() {
     }
@@ -97,14 +109,6 @@ public class Usuario {
         this.telefone = telefone;
     }
 
-    public TipoResidencia getTipoResidencia() {
-        return tipoResidencia;
-    }
-
-    public void setTipoResidencia(TipoResidencia tipoResidencia) {
-        this.tipoResidencia = tipoResidencia;
-    }
-
     public String getRua() {
         return rua;
     }
@@ -137,6 +141,22 @@ public class Usuario {
         this.estado = estado;
     }
 
+    public TipoResidencia getTipoResidencia() {
+        return tipoResidencia;
+    }
+
+    public void setTipoResidencia(TipoResidencia tipoResidencia) {
+        this.tipoResidencia = tipoResidencia;
+    }
+
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
     public BigDecimal getReputacaoMedia() {
         return reputacaoMedia;
     }
@@ -152,7 +172,6 @@ public class Usuario {
     public void setDataCadastro(Timestamp dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-    
     
     
 }

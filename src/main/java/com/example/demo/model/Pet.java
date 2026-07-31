@@ -59,7 +59,8 @@ public class Pet {
         COBRA,
         PEIXE,
         MINI_PIG,
-        CAVALO
+        CAVALO,
+        JABUTI
     }
 
     public enum Porte {
