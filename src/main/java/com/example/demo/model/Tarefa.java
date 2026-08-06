@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 public class Tarefa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -27,44 +27,48 @@ public class Tarefa {
     private Usuario tutor;
 
     @ManyToOne
-    @JoinColumn(name = "prestador_id") 
-    private Usuario prestador; 
+    @JoinColumn(name = "prestador_id")
+    private Usuario prestador;
 
     @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet; 
+    private Pet pet;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_servico", nullable = false)
+    @Column(nullable = false)
     private TipoServico tipoServico;
 
-    @Column(name = "data_agendamento", nullable = false)
-    private LocalDateTime dataAgendamento;
-
-    @Column(name = "preco_ofertado", nullable = false, precision = 10, scale = 2)
-    private BigDecimal precoOfertado;
-
     @Enumerated(EnumType.STRING)
-    private Status status = Status.ABERTA;
+    @Column(nullable = false)
+    private Status status;
 
-    @Column(name = "descricao_detalhes", columnDefinition = "TEXT")
-    private String descricaoDetalhes;
+    @Column(nullable = false)
+    private Double valor;
 
-    @Column(name = "data_criacao", insertable = false, updatable = false)
-    private Timestamp dataCriacao;
+    @Column(nullable = false)
+    private LocalDateTime dataServico;
 
-    public enum TipoServico { PASSEIO, BANHO, HOSPEDAGEM, CUIDADO_DOMICILIAR }
-    public enum Status { ABERTA, EM_ANDAMENTO, CONCLUIDA, CANCELADA }
+    @Column(columnDefinition = "TEXT")
+    private String descricao;
 
-    public Tarefa() {
+    public enum TipoServico{
+        PASSEIO,
+        BANHO,
+        HOSPEDAGEM,
+        CUIDADO_DOMICILIAR
     }
+
+    public enum Status{
+        ABERTA,
+        EM_ANDAMENTO,
+        CONCLUIDA,
+        CANCELADA
+    }
+
+    public Tarefa(){}
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Usuario getTutor() {
@@ -99,22 +103,6 @@ public class Tarefa {
         this.tipoServico = tipoServico;
     }
 
-    public LocalDateTime getDataAgendamento() {
-        return dataAgendamento;
-    }
-
-    public void setDataAgendamento(LocalDateTime dataAgendamento) {
-        this.dataAgendamento = dataAgendamento;
-    }
-
-    public BigDecimal getPrecoOfertado() {
-        return precoOfertado;
-    }
-
-    public void setPrecoOfertado(BigDecimal precoOfertado) {
-        this.precoOfertado = precoOfertado;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -123,22 +111,27 @@ public class Tarefa {
         this.status = status;
     }
 
-    public String getDescricaoDetalhes() {
-        return descricaoDetalhes;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setDescricaoDetalhes(String descricaoDetalhes) {
-        this.descricaoDetalhes = descricaoDetalhes;
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
-    public Timestamp getDataCriacao() {
-        return dataCriacao;
+    public LocalDateTime getDataServico() {
+        return dataServico;
     }
 
-    public void setDataCriacao(Timestamp dataCriacao) {
-        this.dataCriacao = dataCriacao;
+    public void setDataServico(LocalDateTime dataServico) {
+        this.dataServico = dataServico;
     }
 
-    
-    
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 }
