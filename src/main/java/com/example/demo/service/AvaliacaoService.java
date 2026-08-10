@@ -30,25 +30,94 @@ public class AvaliacaoService {
 
     public Avaliacao cadastrar(Avaliacao avaliacao) {
 
-        Tarefa tarefa = tarefaRepository.findById(avaliacao.getTarefa().getId())
-                .orElseThrow(() -> new ResponseStatusException(
+        Tarefa tarefa = tarefaRepository.findById(
+                avaliacao.getTarefa().getId()
+        ).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                "Tarefa não encontrada."));
+                "Tarefa não encontrada."
+        ));
 
-        Usuario avaliador = usuarioRepository.findById(avaliacao.getAvaliador().getId())
-                .orElseThrow(() -> new ResponseStatusException(
+        Usuario avaliador = usuarioRepository.findById(
+                avaliacao.getAvaliador().getId()
+        ).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                "Avaliador não encontrado."));
+                "Avaliador não encontrado."
+        ));
 
-        Usuario avaliado = usuarioRepository.findById(avaliacao.getAvaliado().getId())
-                .orElseThrow(() -> new ResponseStatusException(
+        Usuario avaliado = usuarioRepository.findById(
+                avaliacao.getAvaliado().getId()
+        ).orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND,
-                "Usuário avaliado não encontrado."));
+                "Usuário avaliado não encontrado."
+        ));
 
-        if (avaliacao.getNota() < 1 || avaliacao.getNota() > 5) {
+        if (tarefa.getStatus() != Tarefa.Status.CONCLUIDA) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "A nota deve estar entre 1 e 5.");
+                    "A tarefa precisa estar concluída para receber uma avaliação."
+            );
+        }
+
+        boolean avaliadorParticipou =
+                tarefa.getTutor() != null
+                && tarefa.getTutor().getId().equals(avaliador.getId());
+
+        if (!avaliadorParticipou) {
+
+            avaliadorParticipou =
+                    tarefa.getPrestador() != null
+                    && tarefa.getPrestador().getId().equals(avaliador.getId());
+        }
+
+        if (!avaliadorParticipou) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "O avaliador não participou desta tarefa."
+            );
+        }
+
+        boolean avaliadoParticipou =
+                tarefa.getTutor() != null
+                && tarefa.getTutor().getId().equals(avaliado.getId());
+
+        if (!avaliadoParticipou) {
+
+            avaliadoParticipou =
+                    tarefa.getPrestador() != null
+                    && tarefa.getPrestador().getId().equals(avaliado.getId());
+        }
+
+        if (!avaliadoParticipou) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "O usuário avaliado não participou desta tarefa."
+            );
+        }
+
+        if (avaliador.getId().equals(avaliado.getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Você não pode avaliar a si mesmo."
+            );
+        }
+
+        if (avaliacao.getNota() == null
+                || avaliacao.getNota() < 1
+                || avaliacao.getNota() > 5) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A nota deve estar entre 1 e 5."
+            );
+        }
+
+        if (avaliacaoRepository.existsByTarefaAndAvaliador(
+                tarefa, avaliador)) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Você já avaliou esta tarefa."
+            );
         }
 
         avaliacao.setTarefa(tarefa);
@@ -56,14 +125,19 @@ public class AvaliacaoService {
         avaliacao.setAvaliado(avaliado);
 
         Avaliacao nova = avaliacaoRepository.save(avaliacao);
+        Double media = avaliacaoRepository.calcularMedia(
+                avaliado.getId()
+        );
 
-        Double media = avaliacaoRepository.calcularMedia(avaliado.getId());
+        if (media != null) {
 
-        avaliado.setReputacaoMedia(BigDecimal.valueOf(media));
+            avaliado.setReputacaoMedia(
+                    BigDecimal.valueOf(media)
+            );
 
-        usuarioRepository.save(avaliado);
+            usuarioRepository.save(avaliado);
+        }
 
         return nova;
     }
-
 }

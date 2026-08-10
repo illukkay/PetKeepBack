@@ -22,11 +22,24 @@ public class PrestadorService {
 
     public Prestador cadastrar(Prestador prestador) {
 
-        Usuario usuario = usuarioRepository.findById(prestador.getUsuario().getId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+        Usuario usuario = usuarioRepository
+                .findById(prestador.getUsuario().getId())
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado!")
+                );
+
+        if (usuario.getTipoUsuario() != Usuario.TipoUsuario.PRESTADOR
+                && usuario.getTipoUsuario() != Usuario.TipoUsuario.AMBOS) {
+
+            throw new RuntimeException(
+                    "Este usuário não está cadastrado como prestador!"
+            );
+        }
 
         if (prestadorRepository.existsByUsuario(usuario)) {
-            throw new RuntimeException("Este usuário já possui um perfil de prestador!");
+            throw new RuntimeException(
+                    "Este usuário já possui um perfil de prestador!"
+            );
         }
 
         prestador.setUsuario(usuario);

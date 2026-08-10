@@ -5,6 +5,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.model.Tarefa;
+import com.example.demo.model.TarefaMatch;
 import com.example.demo.service.TarefaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,18 @@ public class TarefaController {
         return service.cadastrar(tarefa);
     }
 
-    @GetMapping("/disponiveis/{usuarioId}")
-    public List<Tarefa> listar(@PathVariable Long usuarioId){
+     @GetMapping("/disponiveis/{usuarioId}")
+    public List<TarefaMatch> listar(@PathVariable Long usuarioId) {
         return service.listarDisponiveis(usuarioId);
     }
 
     @PutMapping("/aceitar/{tarefaId}/{usuarioId}")
-    public Tarefa aceitar(@PathVariable Long tarefaId,
-                          @PathVariable Long usuarioId){
-
+    public Tarefa aceitar(@PathVariable Long tarefaId,@PathVariable Long usuarioId){
         return service.aceitar(tarefaId, usuarioId);
     }
+    @PutMapping("/concluir/{tarefaId}/{prestadorId}")
+    public Tarefa concluir(@PathVariable Long tarefaId, @PathVariable Long prestadorId) {
+    return service.concluir(tarefaId, prestadorId);
+}
 
 }
