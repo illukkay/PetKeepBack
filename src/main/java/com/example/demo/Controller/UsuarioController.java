@@ -9,6 +9,7 @@ import com.example.demo.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -16,20 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Aluno
  */
 @RestController
+@RequestMapping("/user")
 public class UsuarioController {
+
     @Autowired
     private UsuarioService UserService;
-    
+
     @PostMapping("/logar")
-    public String Logar (@RequestBody Usuario user){
+    public String Logar(@RequestBody Usuario user) {
         return UserService.Logar(user.getEmail(), user.getSenha());
-        
+
     }
-    
+
     @PostMapping("/registro")
-    public String Registro (@RequestBody Usuario user){
+    public String Registro(@RequestBody Usuario user) {
         return UserService.Registro(user);
-        
+
     }
-    
+
 }

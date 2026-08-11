@@ -21,7 +21,7 @@ public class AvaliacaoController {
     private AvaliacaoService service;
 
     @PostMapping("/cadastro")
-    public ResponseEntity<?> cadastrar(@RequestBody Avaliacao avaliacao){
+    public ResponseEntity<?> cadastrar(@RequestBody Avaliacao avaliacao) {
 
         return ResponseEntity.ok(service.cadastrar(avaliacao));
 

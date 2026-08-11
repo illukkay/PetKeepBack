@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Aluno
  */
-public interface PrestadorRepository extends JpaRepository<Prestador,Long>{
+public interface PrestadorRepository extends JpaRepository<Prestador, Long> {
 
     boolean existsByUsuario(Usuario usuario);
 

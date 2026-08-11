@@ -29,22 +29,23 @@ public class TarefaController {
     private TarefaService service;
 
     @PostMapping("/cadastro")
-    public Tarefa cadastrar(@RequestBody Tarefa tarefa){
+    public Tarefa cadastrar(@RequestBody Tarefa tarefa) {
         return service.cadastrar(tarefa);
     }
 
-     @GetMapping("/disponiveis/{usuarioId}")
+    @GetMapping("/disponiveis/{usuarioId}")
     public List<TarefaMatch> listar(@PathVariable Long usuarioId) {
         return service.listarDisponiveis(usuarioId);
     }
 
     @PutMapping("/aceitar/{tarefaId}/{usuarioId}")
-    public Tarefa aceitar(@PathVariable Long tarefaId,@PathVariable Long usuarioId){
+    public Tarefa aceitar(@PathVariable Long tarefaId, @PathVariable Long usuarioId) {
         return service.aceitar(tarefaId, usuarioId);
     }
+
     @PutMapping("/concluir/{tarefaId}/{prestadorId}")
     public Tarefa concluir(@PathVariable Long tarefaId, @PathVariable Long prestadorId) {
-    return service.concluir(tarefaId, prestadorId);
-}
+        return service.concluir(tarefaId, prestadorId);
+    }
 
 }
