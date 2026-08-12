@@ -34,5 +34,6 @@ public class UsuarioController {
         return UserService.Registro(user);
 
     }
+    
 
 }

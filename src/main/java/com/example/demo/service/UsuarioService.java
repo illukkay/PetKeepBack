@@ -58,5 +58,6 @@ public String Registro(Usuario cadastro) {
 
     return Token.gerarToken(user);
 }
+
     
 }
