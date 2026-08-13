@@ -19,31 +19,27 @@ public class PrestadorService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private TokenService tokenservice;
+    
+    public Prestador cadastrar(String token, Prestador prestador) {
+    Usuario usuario = tokenservice.extrairClaim(token);
 
-    public Prestador cadastrar(Prestador prestador) {
+    Usuario usuarioBanco = usuarioRepository.findById(usuario.getId())
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
 
-        Usuario usuario = usuarioRepository
-                .findById(prestador.getUsuario().getId())
-                .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado!")
-                );
-
-        if (usuario.getTipoUsuario() != Usuario.TipoUsuario.PRESTADOR
-                && usuario.getTipoUsuario() != Usuario.TipoUsuario.AMBOS) {
-
-            throw new RuntimeException(
-                    "Este usuário não está cadastrado como prestador!"
-            );
-        }
-
-        if (prestadorRepository.existsByUsuario(usuario)) {
-            throw new RuntimeException(
-                    "Este usuário já possui um perfil de prestador!"
-            );
-        }
-
-        prestador.setUsuario(usuario);
-
-        return prestadorRepository.save(prestador);
+    if (usuarioBanco.getTipoUsuario() != Usuario.TipoUsuario.PRESTADOR
+            && usuarioBanco.getTipoUsuario() != Usuario.TipoUsuario.AMBOS) {
+        throw new RuntimeException("Este usuário não está cadastrado como prestador!");
     }
+
+    if (prestadorRepository.existsByUsuario(usuarioBanco)) {
+        throw new RuntimeException("Este usuário já possui um perfil de prestador!");
+    }
+
+    prestador.setUsuario(usuarioBanco);
+
+    return prestadorRepository.save(prestador);
+}
 }

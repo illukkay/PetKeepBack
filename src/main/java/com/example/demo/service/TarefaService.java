@@ -39,51 +39,29 @@ public class TarefaService {
 
     public Tarefa cadastrar(Tarefa tarefa) {
 
-        Usuario tutor = usuarioRepository.findById(
-                tarefa.getTutor().getId()
-        ).orElseThrow(() ->
-                new RuntimeException("Tutor não encontrado")
-        );
-
-        Pet pet = petRepository.findById(
-                tarefa.getPet().getId()
-        ).orElseThrow(() ->
-                new RuntimeException("Pet não encontrado")
-        );
+        Usuario tutor = usuarioRepository.findById(tarefa.getTutor().getId()).orElseThrow(() -> new RuntimeException("Tutor não encontrado"));
+        Pet pet = petRepository.findById(tarefa.getPet().getId()).orElseThrow(() -> new RuntimeException("Pet não encontrado"));
 
         if (!pet.getTutor().getId().equals(tutor.getId())) {
-            throw new RuntimeException(
-                    "Este pet não pertence ao tutor."
-            );
+            throw new RuntimeException("Este pet não pertence ao tutor.");
         }
 
         tarefa.setTutor(tutor);
         tarefa.setPet(pet);
         tarefa.setPrestador(null);
         tarefa.setStatus(Tarefa.Status.ABERTA);
-
         return tarefaRepository.save(tarefa);
     }
 
     public List<TarefaMatch> listarDisponiveis(Long usuarioId) {
-
-        Prestador prestador = prestadorRepository
-                .findByUsuarioId(usuarioId)
-                .orElseThrow(() ->
-                        new RuntimeException("Prestador não encontrado.")
-                );
-
+        Prestador prestador = prestadorRepository.findByUsuarioId(usuarioId).orElseThrow(() -> new RuntimeException("Prestador não encontrado."));
         Usuario usuarioPrestador = prestador.getUsuario();
 
-        List<Tarefa> tarefas =
-                tarefaRepository.findByStatus(Tarefa.Status.ABERTA);
-
+        List<Tarefa> tarefas = tarefaRepository.findByStatus(Tarefa.Status.ABERTA);
         List<TarefaMatch> resultados = new ArrayList<>();
 
         for (Tarefa tarefa : tarefas) {
-
             boolean aceitaPorte;
-
             switch (tarefa.getPet().getPorte()) {
 
                 case PEQUENO:
@@ -102,7 +80,6 @@ public class TarefaService {
                     aceitaPorte = prestador.getAceitaGigante();
                     break;
             }
-
             if (!aceitaPorte) {
                 continue;
             }
@@ -130,22 +107,15 @@ public class TarefaService {
                 default:
                     aceitaServico = false;
             }
-
             if (!aceitaServico) {
                 continue;
             }
 
             double proximidade = calcularProximidade(usuarioPrestador, tarefa.getTutor());
-
             double reputacao = calcularReputacao(tarefa.getTutor());
-
             double espaco = calcularCompatibilidadeEspaco(usuarioPrestador, tarefa.getTutor());
-
             double score = (proximidade * 0.40) + (reputacao * 0.30) + (espaco * 0.30);
-
-            resultados.add(
-                    new TarefaMatch(tarefa, score)
-            );
+            resultados.add(new TarefaMatch(tarefa, score));
         }
 
         return resultados;
@@ -155,20 +125,15 @@ public class TarefaService {
 
         if (prestador.getCidade() != null
                 && tutor.getCidade() != null
-                && prestador.getCidade()
-                        .equalsIgnoreCase(tutor.getCidade())) {
-
+                && prestador.getCidade().equalsIgnoreCase(tutor.getCidade())) {
             return 10.0;
         }
 
         if (prestador.getEstado() != null
                 && tutor.getEstado() != null
-                && prestador.getEstado()
-                        .equalsIgnoreCase(tutor.getEstado())) {
-
+                && prestador.getEstado().equalsIgnoreCase(tutor.getEstado())) {
             return 5.0;
         }
-
         return 0.0;
     }
 
@@ -177,7 +142,6 @@ public class TarefaService {
         if (tutor.getReputacaoMedia() == null) {
             return 10.0;
         }
-
         return tutor.getReputacaoMedia().doubleValue() * 2;
     }
 
@@ -188,53 +152,44 @@ public class TarefaService {
 
         if (prestador.getTipoResidencia()
                 == tutor.getTipoResidencia()) {
-
             return 10.0;
         }
-
         return 5.0;
     }
 
     public Tarefa aceitar(Long tarefaId, Long usuarioId) {
 
-        Tarefa tarefa = tarefaRepository.findById(tarefaId).orElseThrow(() ->
-            new RuntimeException("Tarefa não encontrada"));
+        Tarefa tarefa = tarefaRepository.findById(tarefaId).orElseThrow(()
+                -> new RuntimeException("Tarefa não encontrada"));
 
         if (tarefa.getStatus() != Tarefa.Status.ABERTA) {
-          throw new RuntimeException("Esta tarefa já foi aceita.");
+            throw new RuntimeException("Esta tarefa já foi aceita.");
         }
 
-        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() ->
-            new RuntimeException("Usuário não encontrado"));
-
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(()
+                -> new RuntimeException("Usuário não encontrado"));
         tarefa.setPrestador(usuario);
         tarefa.setStatus(Tarefa.Status.EM_ANDAMENTO);
-
         return tarefaRepository.save(tarefa);
     }
 
     public Tarefa concluir(Long tarefaId, Long prestadorId) {
 
-        Tarefa tarefa = tarefaRepository.findById(tarefaId).orElseThrow(() ->
-             new RuntimeException("Tarefa não encontrada"));
-
+        Tarefa tarefa = tarefaRepository.findById(tarefaId).orElseThrow(()
+                -> new RuntimeException("Tarefa não encontrada"));
         if (tarefa.getPrestador() == null) {
             throw new RuntimeException("Essa tarefa ainda não possui um prestador");
         }
 
         if (!tarefa.getPrestador().getId().equals(prestadorId)) {
-
-           throw new RuntimeException("Você não é o prestador dessa tarefa");
+            throw new RuntimeException("Você não é o prestador dessa tarefa");
         }
 
         if (tarefa.getStatus()
                 != Tarefa.Status.EM_ANDAMENTO) {
-
             throw new RuntimeException("A tarefa precisa estar em andamento para ser concluída");
         }
-
         tarefa.setStatus(Tarefa.Status.CONCLUIDA);
-
         return tarefaRepository.save(tarefa);
     }
 }

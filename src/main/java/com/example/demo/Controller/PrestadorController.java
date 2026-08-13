@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +22,13 @@ public class PrestadorController {
     private PrestadorService prestadorService;
 
     @PostMapping("/cadastro")
-    public ResponseEntity<?> cadastrar(@RequestBody Prestador prestador) {
-        return ResponseEntity.ok(prestadorService.cadastrar(prestador));
-    }
-}
+    public ResponseEntity<?> cadastrar(
+            @RequestHeader("Authorization") String authorization,
+            @RequestBody Prestador prestador) {
+
+        String token = authorization.replace("Bearer ", "");
+
+        return ResponseEntity.ok(
+                prestadorService.cadastrar(token, prestador)
+        );
+    }}
