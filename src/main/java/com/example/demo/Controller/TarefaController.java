@@ -38,6 +38,16 @@ public class TarefaController {
         return service.listarDisponiveis(usuarioId);
     }
 
+    @GetMapping("/tutor/{tutorId}")
+    public List<Tarefa> listarPorTutor(@PathVariable Long tutorId) {
+        return service.listarPorTutor(tutorId);
+    }
+
+    @GetMapping("/andamento/{prestadorId}")
+    public List<Tarefa> listarEmAndamento(@PathVariable Long prestadorId) {
+        return service.listarEmAndamento(prestadorId);
+    }
+
     @PutMapping("/aceitar/{tarefaId}/{usuarioId}")
     public Tarefa aceitar(@PathVariable Long tarefaId, @PathVariable Long usuarioId) {
         return service.aceitar(tarefaId, usuarioId);

@@ -5,8 +5,15 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Pet;
+import static com.example.demo.model.Pet.Porte.GRANDE;
+import static com.example.demo.model.Pet.Porte.MEDIO;
+import static com.example.demo.model.Pet.Porte.PEQUENO;
 import com.example.demo.model.Prestador;
 import com.example.demo.model.Tarefa;
+import static com.example.demo.model.Tarefa.TipoServico.BANHO;
+import static com.example.demo.model.Tarefa.TipoServico.CUIDADO_DOMICILIAR;
+import static com.example.demo.model.Tarefa.TipoServico.HOSPEDAGEM;
+import static com.example.demo.model.Tarefa.TipoServico.PASSEIO;
 import com.example.demo.model.TarefaMatch;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.PetRepository;
@@ -38,6 +45,22 @@ public class TarefaService {
     private PrestadorRepository prestadorRepository;
 
     public Tarefa cadastrar(Tarefa tarefa) {
+
+        if (tarefa.getTipoServico() == null) {
+            throw new RuntimeException("O tipo de serviço é obrigatório!");
+        }
+
+        if (tarefa.getValor() == null || tarefa.getValor() < 0) {
+            throw new RuntimeException("Informe um valor válido para a tarefa!");
+        }
+
+        if (tarefa.getDataServico() == null) {
+            throw new RuntimeException("A data do serviço é obrigatória!");
+        }
+
+        if (tarefa.getDataServico().isBefore(java.time.LocalDateTime.now())) {
+            throw new RuntimeException("A data do serviço não pode estar no passado!");
+        }
 
         Usuario tutor = usuarioRepository.findById(tarefa.getTutor().getId()).orElseThrow(() -> new RuntimeException("Tutor não encontrado"));
         Pet pet = petRepository.findById(tarefa.getPet().getId()).orElseThrow(() -> new RuntimeException("Pet não encontrado"));
@@ -155,6 +178,14 @@ public class TarefaService {
             return 10.0;
         }
         return 5.0;
+    }
+
+    public List<Tarefa> listarPorTutor(Long tutorId) {
+        return tarefaRepository.findByTutorId(tutorId);
+    }
+
+    public List<Tarefa> listarEmAndamento(Long prestadorId) {
+        return tarefaRepository.findByPrestadorIdAndStatus(prestadorId, Tarefa.Status.EM_ANDAMENTO);
     }
 
     public Tarefa aceitar(Long tarefaId, Long usuarioId) {

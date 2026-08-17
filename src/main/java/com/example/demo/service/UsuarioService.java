@@ -34,6 +34,54 @@ public class UsuarioService {
 
     public String Registro(Usuario cadastro) {
 
+        if (cadastro.getNome() == null || cadastro.getNome().isBlank()) {
+            throw new RuntimeException("Nome é obrigatório.");
+        }
+
+        if (cadastro.getEmail() == null || !cadastro.getEmail().matches("^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+            throw new RuntimeException("Informe um email válido.");
+        }
+
+        if (cadastro.getSenha() == null || cadastro.getSenha().isBlank()) {
+            throw new RuntimeException("Senha é obrigatória.");
+        }
+
+        if (cadastro.getSenha().length() < 6) {
+            throw new RuntimeException("A senha deve ter no mínimo 6 caracteres!");
+        }
+
+        if (cadastro.getTelefone() == null || cadastro.getTelefone().isBlank()) {
+            throw new RuntimeException("O telefone é obrigatório!");
+        }
+
+        if (!cadastro.getTelefone().matches("\\d+")) {
+            throw new RuntimeException("Telefone deve conter apenas números.");
+        }
+
+        if (cadastro.getRua() == null || cadastro.getRua().isBlank()) {
+            throw new RuntimeException("A rua é obrigatória!");
+        }
+
+        if (cadastro.getBairro() == null || cadastro.getBairro().isBlank()) {
+            throw new RuntimeException("O bairro é obrigatório!");
+        }
+
+        if (cadastro.getCidade() == null || cadastro.getCidade().isBlank()) {
+            throw new RuntimeException("Cidade é obrigatória.");
+        }
+
+        if (cadastro.getEstado() == null || cadastro.getEstado().isBlank()) {
+            throw new RuntimeException("O estado é obrigatório!");
+        }
+
+        if (cadastro.getTipoUsuario() == null) {
+            throw new RuntimeException("O tipo de usuário é obrigatório!");
+        }
+
+        if (usuarioR.existsByEmail(cadastro.getEmail())) {
+            throw new RuntimeException("Já existe um usuário cadastrado com este email!");
+        }
+
         Usuario user = new Usuario();
 
         user.setNome(cadastro.getNome());
@@ -54,24 +102,10 @@ public class UsuarioService {
 
         usuarioR.save(user);
 
-if (user.getTipoUsuario() == Usuario.TipoUsuario.PRESTADOR
-        || user.getTipoUsuario() == Usuario.TipoUsuario.AMBOS) {
+        return Token.gerarToken(user);
+    }
 
-    Prestador prestador = new Prestador();
-
-    prestador.setUsuario(user);
-    prestador.setAceitaHospedagem(false);
-    prestador.setAceitaPasseio(false);
-    prestador.setAceitaBanho(false);
-    prestador.setAceitaPequeno(false);
-    prestador.setAceitaMedio(false);
-    prestador.setAceitaGrande(false);
-    prestador.setAceitaGigante(false);
-    prestador.setDescricao("");
-    prestador.setValorHora(0.0);
-
-    prestadorRepository.save(prestador);
-}
-
-return Token.gerarToken(user);}
+    public Usuario buscarPorId(Long id) {
+        return usuarioR.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+    }
 }

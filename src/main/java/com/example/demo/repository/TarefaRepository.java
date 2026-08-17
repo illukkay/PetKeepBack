@@ -18,4 +18,8 @@ public interface TarefaRepository extends JpaRepository<Tarefa,Long>{
 
     List<Tarefa> findByStatus(Tarefa.Status status);
 
+    List<Tarefa> findByTutorId(Long tutorId);
+
+    List<Tarefa> findByPrestadorIdAndStatus(Long prestadorId, Tarefa.Status status);
+
 }

@@ -38,6 +38,27 @@ public class PrestadorService {
         throw new RuntimeException("Este usuário já possui um perfil de prestador!");
     }
 
+    if (prestador.getValorHora() == null || prestador.getValorHora() < 0) {
+        throw new RuntimeException("Informe um valor por hora válido!");
+    }
+
+    boolean aceitaAlgumServico = Boolean.TRUE.equals(prestador.getAceitaHospedagem())
+            || Boolean.TRUE.equals(prestador.getAceitaPasseio())
+            || Boolean.TRUE.equals(prestador.getAceitaBanho());
+
+    if (!aceitaAlgumServico) {
+        throw new RuntimeException("Selecione ao menos um serviço oferecido!");
+    }
+
+    boolean aceitaAlgumPorte = Boolean.TRUE.equals(prestador.getAceitaPequeno())
+            || Boolean.TRUE.equals(prestador.getAceitaMedio())
+            || Boolean.TRUE.equals(prestador.getAceitaGrande())
+            || Boolean.TRUE.equals(prestador.getAceitaGigante());
+
+    if (!aceitaAlgumPorte) {
+        throw new RuntimeException("Selecione ao menos um porte aceito!");
+    }
+
     prestador.setUsuario(usuarioBanco);
 
     return prestadorRepository.save(prestador);

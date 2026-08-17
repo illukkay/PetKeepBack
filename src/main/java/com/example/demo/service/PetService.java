@@ -19,6 +19,22 @@ public class PetService {
 
     public Pet cadastrar(Pet cadastro) {
 
+        if (cadastro.getNome() == null || cadastro.getNome().isBlank()) {
+            throw new RuntimeException("O nome do pet é obrigatório!");
+        }
+
+        if (cadastro.getEspecie() == null) {
+            throw new RuntimeException("A espécie do pet é obrigatória!");
+        }
+
+        if (cadastro.getPorte() == null) {
+            throw new RuntimeException("O porte do pet é obrigatório!");
+        }
+
+        if (cadastro.getIdade() != null && cadastro.getIdade() < 0) {
+            throw new RuntimeException("A idade do pet não pode ser negativa!");
+        }
+
         Usuario usuario = usuarioRepository.findById(cadastro.getTutor().getId()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
         cadastro.setTutor(usuario);
         return petRepository.save(cadastro);
